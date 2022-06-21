@@ -1,25 +1,11 @@
-import SignupPage from '../pages/SignupPage'
+import signup from '../pages/SignupPage'
+import deliverFactory from '../fixtures/Factories/deliverFactory'
 
 describe('CADASTRO', ()=>{
-    it('Cadasrar deliver',()=>{
 
-        var deliver = {
-            personal_name: 'Heitor Rosani',
-            cpf: '12345678910',
-            email: 'heitor@email.com',
-            whats: '11988776655',
-            zipcode: '08725640',
-            number: '84',
-            deliver_method: 'Moto',
-            cnh: 'cnh-digital.jpg',
-            address: {
-                addres_name: 'Rua Alzira Elizabete Unello',
-                neighborhood: 'Jardim Rubi',
-                city: 'Mogi das Cruzes/SP'
-            }
-        }
+    it('Cadasrar deliver',function(){
 
-        var signup = new SignupPage();
+        var deliver = deliverFactory.deliver()
 
         signup.go()
         signup.fillForm(deliver)
@@ -30,31 +16,26 @@ describe('CADASTRO', ()=>{
         signup.modalContentShouldBe(message)
         
     })
-    it('CPF incorreto',()=>{
+    it('CPF incorreto',function(){
 
-        var deliver = {
-            personal_name: 'Heitor Rosani',
-            cpf: '123456789AA',
-            email: 'heitor@email.com',
-            whats: '11988776655',
-            zipcode: '08725640',
-            number: '84',
-            deliver_method: 'Moto',
-            cnh: 'cnh-digital.jpg',
-            address: {
-                addres_name: 'Rua Alzira Elizabete Unello',
-                neighborhood: 'Jardim Rubi',
-                city: 'Mogi das Cruzes/SP'
-            }
-        }
-
-        var signup = new SignupPage();
+        var deliver = deliverFactory.deliver()
+        deliver.cpf = '12345678AA'
 
         signup.go()
         signup.fillForm(deliver)
         signup.submit()
+        signup.alertMessageShoulBe('Oops! CPF inválido')
+    })
 
-        cy.get('.alert-error').should('have.text', 'Oops! CPF inválido')
+    it('Email incorreto',function(){
+
+        var deliver = deliverFactory.deliver()
+        deliver.email = 'heitor.email.com'
+
+        signup.go()
+        signup.fillForm(deliver)
+        signup.submit()
+        signup.alertMessageShoulBe('Oops! Email com formato inválido.')
 
     })
 })
